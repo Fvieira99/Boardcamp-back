@@ -69,3 +69,24 @@ export async function addCustomer(req, res) {
     res.sendStatus(500);
   }
 }
+
+export async function updateCustomer(req, res) {
+  const { id } = req.params;
+  const { name, cpf, birthday, phone } = req.body;
+  const formatedBirthday = birthday.slice(0, 10);
+
+  try {
+    const updatedCustomer = await connection.query(
+      `
+      UPDATE customers SET name = $1, cpf = $2, birthday = $3, phone = $4
+      WHERE id = $5
+    `,
+      [name, cpf, formatedBirthday, phone, id]
+    );
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
