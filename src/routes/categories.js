@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import { addCategory, listCategories } from "../controllers/categories.js";
 import addCategoryValidation from "../middlewares/add-category.js";
 

@@ -1,7 +1,6 @@
 import connection from "../db.js";
 import dayjs from "dayjs";
 
-// --------------------  FIX ME! ---------------------
 export async function listRentals(req, res) {
   const rentalsArr = [];
   const rentals = res.locals.rentals;
@@ -58,6 +57,49 @@ export async function addRental(req, res) {
       ]
     );
 
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
+
+export async function returnRental(req, res) {
+  const rentalIdParam = req.params.id;
+  const date = dayjs().format("YYYY-MM-DD");
+  const { delayFeeValue } = res.locals;
+
+  console.log("esse aqui é o delayfee", delayFeeValue);
+
+  try {
+    await connection.query(
+      `
+      UPDATE rentals SET
+      "returnDate" = $1,
+      "delayFee" = $2
+      WHERE id = $3
+    `,
+      [date, delayFeeValue, rentalIdParam]
+    );
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
+
+export async function deleteRental(req, res) {
+  const rentalIdParam = req.params.id;
+
+  try {
+    await connection.query(
+      `
+      DELETE FROM rentals
+      WHERE id = $1
+    
+    `,
+      [rentalIdParam]
+    );
     res.sendStatus(200);
   } catch (error) {
     console.log(error);
