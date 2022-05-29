@@ -2,17 +2,36 @@ import connection from "../db.js";
 import dayjs from "dayjs";
 
 // --------------------  FIX ME! ---------------------
-// export async function listRentals(req, res) {
-//   try {
-//     const rentals = await connection.query(`
-//       SELECT rentals.*, (customers.id, customers.name) AS customer,
-//       (SELECT games.*, categories.name AS "categoryName" FROM games
-//       JOIN categories ON games."categoryId" = categories.id) AS game
-//       FROM rentals
+export async function listRentals(req, res) {
+  const rentalsArr = [];
+  const rentals = res.locals.rentals;
+  try {
+    for (let rental of rentals.rows) {
+      const customer = await connection.query(
+        `
+        SELECT id, name FROM customers 
+        WHERE id = ${rental.customerId}
+      `
+      );
 
-//     `);
-//   } catch (error) {}
-// }
+      const game = await connection.query(`
+        SELECT games.id, games.name, games."categoryId", categories.name AS "categoryName" 
+        FROM games
+        JOIN categories ON categories.id = games."categoryId"
+      `);
+
+      rentalsArr.push({
+        ...rental,
+        customer: customer.rows[0],
+        game: game.rows[0]
+      });
+    }
+    res.send(rentalsArr);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+}
 
 export async function addRental(req, res) {
   const { customerId, gameId, daysRented } = req.body;
