@@ -6,7 +6,7 @@ dotenv.config();
 const { Pool } = pg;
 
 const databaseConfig = {
-  connectionString: process.env.DB_URL
+  connectionString: process.env.DATABASE_URL
 };
 
 if (process.env.MODE === "PROD") {
