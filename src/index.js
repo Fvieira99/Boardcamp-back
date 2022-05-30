@@ -17,7 +17,7 @@ server.use(gamesRouter);
 server.use(customersRouter);
 server.use(rentalsRouter);
 
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () =>
-  console.log(`Servidor Funcionando na porta ${PORT}.`)
+const port = process.env.PORT || 4000;
+server.listen(port, () =>
+  console.log(`Servidor Funcionando na porta ${port}.`)
 );
